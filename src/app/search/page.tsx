@@ -1,10 +1,12 @@
+"use client"
+
 import styled from "styled-components";
 import { IoSearch } from "react-icons/io5";
 import { ReactElement } from "react";
 import Search from "@/components/common/Search";
 import Layout from "@/components/Layout";
 import SearchLayout from "@/components/search/SearchLayout";
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "@/pages/_app";
 import GymListBanner from "@/components/search/GymListBanner";
 import { COLOR } from "@/styles/global-color";
 import { DISTRCIT_CITY_DATA } from "@/constants/search/constants";
@@ -15,11 +17,9 @@ const SearchPage: NextPageWithLayout = () => {
   const searchWord = router.query.q as string;
   const sortingType = router.query.s as string;
 
-  const handleSubmit = (event: {
-    preventDefault: () => void;
-    target: { [x: string]: { value: any } };
-  }) => {
+  const handleSubmit = (event: { preventDefault: () => void; target: { [x: string]: { value: any } } }) => {
     event.preventDefault();
+    console.log("hello")
     // 검색내용 포함시켜 라우팅
     router
       .push({

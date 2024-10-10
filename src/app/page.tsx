@@ -1,11 +1,13 @@
+"use client";
+
 import styled from "styled-components";
 import { ReactElement } from "react";
 import Layout from "@/components/Layout";
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "@/pages/_app";
 import SearchLayout from "@/components/search/SearchLayout";
 import SearchBanner from "@/components/search/searchBanner";
 import GymListBanner from "@/components/search/GymListBanner";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { COLOR } from "@/styles/global-color";
 
 const HomePage: NextPageWithLayout = () => {
@@ -13,13 +15,10 @@ const HomePage: NextPageWithLayout = () => {
 
   return (
     <Styled.Wrapper>
-      <SearchBanner/>
+      <SearchBanner />
       <GymListBanner isSearchPage={false} />
       <Styled.ButtonWrapper>
-        <Styled.MoreButton
-          className="container"
-          onClick={() => router.push("/search")}
-        >
+        <Styled.MoreButton className="container" onClick={() => router.push("/search")}>
           암장 더 알아보기 〉
         </Styled.MoreButton>
       </Styled.ButtonWrapper>

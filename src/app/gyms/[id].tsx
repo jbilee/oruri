@@ -18,7 +18,7 @@ import type { GymData } from "@/constants/gyms/types";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 const GymInfo = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const [gymData, setGymData] = useState<null | GymData>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -64,7 +64,7 @@ const GymInfo = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
               key={gymData.id}
               id={gymData.id}
               comments={gymData.comments}
-              session={session}
+              session={null}
             />
           </S.Wrapper>
           <ChatModal key={gymData.id} gymId={gymData.id} gymName={gymData.name} />
