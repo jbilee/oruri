@@ -6,25 +6,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  async redirects() {
-    return [
-      {
-        source: "/manage/edit",
-        destination: "/manage",
-        permanent: true,
-      },
-      {
-        source: "/manage/comments",
-        destination: "/manage",
-        permanent: true,
-      },
-      {
-        source: "/manage/chat",
-        destination: "/manage",
-        permanent: true,
-      },
-    ];
-  },
   images: {
     remotePatterns: [
       {

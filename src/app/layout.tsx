@@ -1,4 +1,7 @@
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 import QueryProvider from "@/contexts/QueryProvider";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,7 +20,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <ClerkProvider>
+          <QueryProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </QueryProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
