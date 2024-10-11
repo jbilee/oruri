@@ -3,7 +3,6 @@ import { CgProfile } from "react-icons/cg";
 import { MdNavigateNext } from "react-icons/md";
 import Link from "next/link";
 import { IoClose } from "react-icons/io5";
-import handleSignOut from "@/service/api/logout";
 import { COLOR } from "@/styles/global-color";
 import { SidebarDetailProps } from "@/constants/sideBar/type";
 
@@ -43,7 +42,7 @@ const SidebarDetails = ({
             <S.Link href={"/settings"}>설정</S.Link>
           </S.ItemWrapper>
         </S.CategoryContainer>
-        <S.ButtonBox onClick={handleSignOut}>로그아웃</S.ButtonBox>
+        {/* <S.ButtonBox onClick={handleSignOut}>로그아웃</S.ButtonBox> */}
       </S.BarContainer>
     </S.SidebarWrapper>
   );

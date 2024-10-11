@@ -1,16 +1,15 @@
 import { requestData } from "@/service/api";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { styled } from "styled-components";
 import InputWithTitle from "../common/InputWithTitle";
 import { IoWarning } from "react-icons/io5";
 import { COLOR } from "@/styles/global-color";
 import { FaCircleCheck } from "react-icons/fa6";
-import handleSignOut from "@/service/api/logout";
 import sha256 from "crypto-js/sha256";
+import { useUser } from "@clerk/nextjs";
 
 const DeleteAccount = () => {
-  const { data: session, status, update } = useSession();
+  const { user } = useUser();
 
   const [isChecked, setIsChecked] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState("");
@@ -31,7 +30,6 @@ const DeleteAccount = () => {
     const onSuccess = () => {
       //TODO: 삭제후 로그아웃 논의필요
       alert("계정이 삭제되었습니다.");
-      return handleSignOut();
     };
 
     const onError = (error: Error) => {
@@ -43,14 +41,12 @@ const DeleteAccount = () => {
     requestData({
       option: "DELETE",
       url: "/members",
-      session,
       data: {
         checkPassword: sha256(password).toString(),
       },
       onSuccess,
       onError,
       hasBody: false,
-      update,
     });
   };
   if (status !== "authenticated") {
@@ -66,19 +62,10 @@ const DeleteAccount = () => {
         </S.IconWrapper>
         <S.Title>오르리 탈퇴</S.Title>
       </S.TitleContainer>
-      <S.SubTitle>
-        본 서비스를 탈퇴하시면, 암장 등록 및 관리, 채팅, 북마크 기능을 사용하실
-        수 없습니다.
-      </S.SubTitle>
-      <S.SubTitle>
-        탈퇴 신청 즉시, 저장된 모든 정보가 삭제되며, 삭제한 정보는 다시 복구할
-        수 없습니다.
-      </S.SubTitle>
+      <S.SubTitle>본 서비스를 탈퇴하시면, 암장 등록 및 관리, 채팅, 북마크 기능을 사용하실 수 없습니다.</S.SubTitle>
+      <S.SubTitle>탈퇴 신청 즉시, 저장된 모든 정보가 삭제되며, 삭제한 정보는 다시 복구할 수 없습니다.</S.SubTitle>
       <S.CheckContainer onClick={handleCheckClick} $isChecked={isChecked}>
-        <FaCircleCheck
-          size="20"
-          color={isChecked ? COLOR.WARNING : COLOR.BORDER_UNFOCUSED}
-        />
+        <FaCircleCheck size="20" color={isChecked ? COLOR.WARNING : COLOR.BORDER_UNFOCUSED} />
         <div>안내사항을 확인하였으며, 이에 동의합니다.</div>
       </S.CheckContainer>
       <S.InputWrapper>
@@ -90,10 +77,7 @@ const DeleteAccount = () => {
           message={passwordMessage}
         />
       </S.InputWrapper>
-      <S.ButtonBox
-        onClick={handleDeleteAccount}
-        disabled={!isChecked || password === ""}
-      >
+      <S.ButtonBox onClick={handleDeleteAccount} disabled={!isChecked || password === ""}>
         회원 탈퇴
       </S.ButtonBox>
     </S.Wrapper>
@@ -128,9 +112,7 @@ const S = {
   IconWrapper: styled.div``,
   CheckContainer: styled.div<{ $isChecked: boolean }>`
     border-radius: 5px;
-    border: 1px solid
-      ${({ $isChecked }) =>
-        $isChecked ? COLOR.WARNING : COLOR.BORDER_UNFOCUSED};
+    border: 1px solid ${({ $isChecked }) => ($isChecked ? COLOR.WARNING : COLOR.BORDER_UNFOCUSED)};
     border-width: ${({ $isChecked }) => ($isChecked ? "2px" : "1px")};
     padding: 8px;
     display: flex;

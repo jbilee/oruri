@@ -84,7 +84,7 @@ const Search = ({
           name="search"
           type="text"
           placeholder={placeholder}
-          defaultValue={searchWord}
+          defaultValue={searchWord ?? ""}
           fontSize={fontSize}
           onClick={(e) => {
             e.stopPropagation(); // 상위로 이벤트 전송 막음

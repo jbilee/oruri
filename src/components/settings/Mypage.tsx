@@ -1,12 +1,12 @@
-import { useSession } from "next-auth/react";
 import { styled } from "styled-components";
 import ChangeNickname from "./ChangeNickname";
 import ChangePassword from "./ChangePassword";
+import { useUser } from "@clerk/nextjs";
 
 const Mypage = () => {
-  const { status } = useSession();
+  const { user } = useUser();
 
-  if (status !== "authenticated") {
+  if (!user) {
     return <div>잘못된 접근입니다.</div>;
   }
 

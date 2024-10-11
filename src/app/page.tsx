@@ -1,16 +1,12 @@
 "use client";
 
 import styled from "styled-components";
-import { ReactElement } from "react";
-import Layout from "@/components/Layout";
-import { NextPageWithLayout } from "@/pages/_app";
-import SearchLayout from "@/components/search/SearchLayout";
 import SearchBanner from "@/components/search/searchBanner";
 import GymListBanner from "@/components/search/GymListBanner";
 import { useRouter } from "next/navigation";
 import { COLOR } from "@/styles/global-color";
 
-const HomePage: NextPageWithLayout = () => {
+const HomePage = () => {
   const router = useRouter();
 
   return (
@@ -23,14 +19,6 @@ const HomePage: NextPageWithLayout = () => {
         </Styled.MoreButton>
       </Styled.ButtonWrapper>
     </Styled.Wrapper>
-  );
-};
-
-HomePage.getLayout = (page: ReactElement) => {
-  return (
-    <Layout>
-      <SearchLayout>{page}</SearchLayout>
-    </Layout>
   );
 };
 

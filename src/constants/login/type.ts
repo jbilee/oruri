@@ -1,41 +1,4 @@
-import { DefaultSession, DefaultUser } from "next-auth";
-import { DefaultJWT } from "next-auth/jwt";
 import { Dispatch, SetStateAction } from "react";
-
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: {
-      email: string;
-      nickname: string;
-    };
-
-    jwt: {
-      accessToken: string;
-      refreshToken: string;
-      accessExpireDate?: number;
-      refreshExpireDate?: number;
-    };
-  }
-  interface User extends DefaultUser {
-    jwt: {
-      accessToken: string;
-      refreshToken: string;
-      accessExpireDate?: number;
-      refreshExpireDate?: number;
-    };
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT extends DefaultJWT {
-    jwt: {
-      accessToken: string;
-      refreshToken: string;
-      accessExpireDate?: number;
-      refreshExpireDate?: number;
-    };
-  }
-}
 
 export interface InputProps {
   name: string;

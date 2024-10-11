@@ -5,17 +5,9 @@ import router from "next/router";
 import { GymListBannerProps } from "@/constants/search/types";
 import { COLOR } from "@/styles/global-color";
 import { DEVICE_SIZE } from "@/constants/styles";
-import {
-  queryToSortingType,
-  sortingTypes,
-  sortingTypeToQuery,
-} from "@/constants/search/constants";
+import { queryToSortingType, sortingTypes, sortingTypeToQuery } from "@/constants/search/constants";
 
-const GymListBanner = ({
-  searchWord,
-  sortingType = "",
-  isSearchPage = true,
-}: GymListBannerProps) => {
+const GymListBanner = ({ searchWord, sortingType = "", isSearchPage = true }: GymListBannerProps) => {
   const queryType = isSearchPage ? queryToSortingType(sortingType) : "";
 
   const handleButtonClick: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -64,11 +56,7 @@ const GymListBanner = ({
   return (
     <Styled.Wrapper>
       <Styled.ButtonWrapper>{SortingButtons}</Styled.ButtonWrapper>
-      <LazyLoadingItems
-        searchWord={searchWord}
-        sortingType={sortingType}
-        isSearchPage={isSearchPage}
-      />
+      <LazyLoadingItems searchWord={searchWord ?? ""} sortingType={sortingType} isSearchPage={isSearchPage} />
     </Styled.Wrapper>
   );
 };

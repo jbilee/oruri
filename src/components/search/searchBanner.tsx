@@ -1,6 +1,8 @@
+"use client";
+
 import { IoSearch } from "react-icons/io5";
 import styled from "styled-components";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import img from "../../../public/magnifier.png";
 import { DEVICE_SIZE } from "@/constants/styles";
@@ -10,17 +12,12 @@ import { DISTRCIT_CITY_DATA } from "@/constants/search/constants";
 import Search from "../common/Search";
 
 const SearchBanner = ({ searchWord }: SearchBannerProps) => {
-  const handleSubmit = (event: {
-    preventDefault: () => void;
-    target: { [x: string]: { value: any } };
-  }) => {
+  const router = useRouter();
+  const handleSubmit = (event: { preventDefault: () => void; target: { [x: string]: { value: any } } }) => {
     event.preventDefault();
 
     // 검색내용 포함시켜 라우팅
-    router.push({
-      pathname: "/search",
-      query: { q: event.target["search"].value },
-    });
+    router.push(`/search?q=${event.target["search"].value}`);
   };
 
   return (
@@ -32,12 +29,7 @@ const SearchBanner = ({ searchWord }: SearchBannerProps) => {
           dataList={DISTRCIT_CITY_DATA}
           width="450px"
           height="40px"
-          postfixIcon={
-            <IoSearch
-              size="23"
-              color={COLOR.MAIN}
-            />
-          }
+          postfixIcon={<IoSearch size="23" color={COLOR.MAIN} />}
           placeholder="주소 또는 암벽장을 입력하세요."
           onSubmit={handleSubmit}
           useLocation={true}

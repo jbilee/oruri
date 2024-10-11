@@ -1,15 +1,14 @@
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import InputWithTitle from "../common/InputWithTitle";
 import { PASSWORD_REGREX } from "@/constants/login/constants";
 import { styled } from "styled-components";
 import { requestData } from "@/service/api";
-import handleSignOut from "@/service/api/logout";
 import { COLOR } from "@/styles/global-color";
 import sha256 from "crypto-js/sha256";
+import { useUser } from "@clerk/nextjs";
 
 const ChangePassword = () => {
-  const { status, data: session, update } = useSession();
+  const { user } = useUser();
 
   const [isCurrentValid, setIsCurrentValid] = useState(false);
   const [CurrentMessage, setCurrentMessage] = useState("");
@@ -47,9 +46,7 @@ const ChangePassword = () => {
     const currentNewPassword = event.target.value;
 
     if (!PASSWORD_REGREX.test(currentNewPassword)) {
-      setNewPasswordMessage(
-        "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요."
-      );
+      setNewPasswordMessage("숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요.");
       setIsNewPasswordValid(false);
     } else {
       setNewPasswordMessage("");
@@ -79,7 +76,6 @@ const ChangePassword = () => {
     const onSuccess = () => {
       alert(`비밀번호가 변경되었습니다.
 재로그인 하시기 바랍니다.`);
-      return handleSignOut();
     };
 
     requestData({
@@ -89,14 +85,12 @@ const ChangePassword = () => {
         beforePassword: sha256(currentPassword).toString(),
         afterPassword: sha256(newPassword).toString(),
       },
-      session,
       onSuccess,
       hasBody: false,
-      update,
     });
   };
 
-  if (status !== "authenticated") {
+  if (!user) {
     return <div>잘못된 접근입니다.</div>;
   }
   return (
@@ -124,12 +118,7 @@ const ChangePassword = () => {
           onChange={handleReEnterPasswordChange}
           message={reEnterPasswordMessage}
         />
-        <S.ButtonBox
-          type="submit"
-          disabled={
-            !(isCurrentValid && isNewPasswordValid && isReEnterPasswordValid)
-          }
-        >
+        <S.ButtonBox type="submit" disabled={!(isCurrentValid && isNewPasswordValid && isReEnterPasswordValid)}>
           저장하기
         </S.ButtonBox>
       </S.JoinForm>

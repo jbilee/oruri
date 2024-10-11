@@ -1,28 +1,26 @@
 import { styled } from "styled-components";
 import PreviewCard from "../common/PreviewCard";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { requestData } from "@/service/api";
 import { SimpleGymData } from "@/constants/gyms/types";
+import { useUser } from "@clerk/nextjs";
 
 const MyBookmark = () => {
-  const { data: session, status, update } = useSession();
+  const { user } = useUser();
   const [items, setItems] = useState<SimpleGymData[]>();
 
   useEffect(() => {
-    if (session) {
+    if (user) {
       requestData({
         option: "GET",
         url: "/members/bookmark",
-        session,
         onSuccess: (data) => setItems(data),
         hasBody: true,
-        update,
       });
     }
-  }, [session]);
+  }, [user]);
 
-  if (status !== "authenticated") {
+  if (!user) {
     return <div>잘못된 접근입니다.</div>;
   }
 
@@ -30,14 +28,7 @@ const MyBookmark = () => {
     <S.CardContainer>
       {items &&
         items.map((gymInfo, index) => {
-          return (
-            <PreviewCard
-              key={index}
-              width="350px"
-              height="300px"
-              cardInfo={gymInfo}
-            />
-          );
+          return <PreviewCard key={index} width="350px" height="300px" cardInfo={gymInfo} />;
         })}
     </S.CardContainer>
   );

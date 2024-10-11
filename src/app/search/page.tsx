@@ -1,32 +1,24 @@
-"use client"
+"use client";
 
 import styled from "styled-components";
 import { IoSearch } from "react-icons/io5";
-import { ReactElement } from "react";
 import Search from "@/components/common/Search";
-import Layout from "@/components/Layout";
-import SearchLayout from "@/components/search/SearchLayout";
-import { NextPageWithLayout } from "@/pages/_app";
 import GymListBanner from "@/components/search/GymListBanner";
 import { COLOR } from "@/styles/global-color";
 import { DISTRCIT_CITY_DATA } from "@/constants/search/constants";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const SearchPage: NextPageWithLayout = () => {
+const SearchPage = () => {
   const router = useRouter();
-  const searchWord = router.query.q as string;
-  const sortingType = router.query.s as string;
+  const searchParams = useSearchParams();
+  const searchWord = searchParams?.get("q");
+  const sortingType = searchParams?.get("s");
 
   const handleSubmit = (event: { preventDefault: () => void; target: { [x: string]: { value: any } } }) => {
     event.preventDefault();
-    console.log("hello")
+
     // 검색내용 포함시켜 라우팅
-    router
-      .push({
-        pathname: "/search",
-        query: { q: event.target["search"].value },
-      })
-      .then(() => router.reload());
+    router.push(`/search?q=${event.target["search"].value}`);
   };
 
   return (
@@ -44,16 +36,8 @@ const SearchPage: NextPageWithLayout = () => {
           searchWord={searchWord}
         />
       </Styled.SearchWrapper>
-      <GymListBanner searchWord={searchWord} sortingType={sortingType} />
+      <GymListBanner searchWord={searchWord} sortingType={sortingType ?? ""} />
     </Styled.Wrapper>
-  );
-};
-
-SearchPage.getLayout = (page: ReactElement) => {
-  return (
-    <Layout>
-      <SearchLayout>{page}</SearchLayout>
-    </Layout>
   );
 };
 

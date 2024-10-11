@@ -1,3 +1,5 @@
+"use client";
+
 import { type Dispatch, type ReactNode, type SetStateAction, createContext, useState } from "react";
 import type { MessageFormat } from "./components/chat/ChatHistory";
 
@@ -21,7 +23,7 @@ type GetFormattedChatHistoryProps = (
   fetchedHistory: FetchedChatHistory,
   nickname: string,
   leftUserType: string,
-  rightUserType: string,
+  rightUserType: string
 ) => MessageFormat[];
 
 const ChatHistoryContext = createContext<ChatHistoryContextProps>({
@@ -33,7 +35,7 @@ export const getFormattedChatHistory: GetFormattedChatHistoryProps = (
   fetchedHistory,
   nickname,
   leftUserType,
-  rightUserType,
+  rightUserType
 ) =>
   fetchedHistory.reduce((acc: Array<MessageFormat | unknown>, cur: ChatHistoryData) => {
     const { sender, message, createdAt } = cur;
@@ -56,9 +58,7 @@ export const getFormattedTime = (time: string) => {
 const ChatHistoryProvider = ({ children }: { children: ReactNode }) => {
   const [history, setHistory] = useState<ChatHistoryProps>(null);
   return (
-    <ChatHistoryContext.Provider value={{ history, updateHistory: setHistory }}>
-      {children}
-    </ChatHistoryContext.Provider>
+    <ChatHistoryContext.Provider value={{ history, updateHistory: setHistory }}>{children}</ChatHistoryContext.Provider>
   );
 };
 

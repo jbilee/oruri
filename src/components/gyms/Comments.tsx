@@ -8,6 +8,7 @@ import { SERVER_ADDRESS, TEST_ADDRESS } from "@/constants/constants";
 import { DEVICE_SIZE } from "@/constants/styles";
 import { COLOR } from "@/styles/global-color";
 import type { CommentsProps, UserComment } from "@/constants/gyms/types";
+import { useUser } from "@clerk/nextjs";
 
 const getCurrentDate = () => {
   const currentDate = new Date();
@@ -19,12 +20,13 @@ const getCurrentDate = () => {
 
 const Comments = ({ id, comments, session }: CommentsProps) => {
   const [currentComments, setCurrentComments] = useState<UserComment[]>(comments || []);
+  const { user } = useUser();
 
   const handleAddComment = async (input: string) => {
-    if (!session || !session.user) return "login";
+    if (!user) return "login";
 
     const newComment = {
-      user: session.user.nickname,
+      user: user.username,
       createdAt: getCurrentDate(),
       text: input,
     };
@@ -39,13 +41,11 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
           },
           body: JSON.stringify({ newComment }),
         }),
-        new Promise<Response>((_, reject) =>
-          setTimeout(() => reject(new Response(null, { status: 503 })), 3000),
-        ),
+        new Promise<Response>((_, reject) => setTimeout(() => reject(new Response(null, { status: 503 })), 3000)),
       ]);
       console.log(response);
       if (!response.ok) throw new Error(`${response.status}`);
-      setCurrentComments((prev) => [newComment, ...prev]);
+      // setCurrentComments((prev) => [newComment, ...prev]);
       return "successful";
     } catch (e) {
       // 에러 종류에 따라 핸들링
@@ -68,11 +68,11 @@ const Comments = ({ id, comments, session }: CommentsProps) => {
                   <div style={{ display: "flex" }}>
                     <span className="comment__user">{user}</span>
                     <span className="comment__date">{createdAt}</span>
-                    {session.user.nickname === user && (
+                    {
                       <ReactIcon clickable={true}>
                         <IoTrash onClick={handleDeleteComment} />
                       </ReactIcon>
-                    )}
+                    }
                   </div>
                   <div>{text}</div>
                 </S.Comment>

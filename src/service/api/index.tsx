@@ -1,6 +1,5 @@
 import { SERVER_ADDRESS } from "@/constants/constants";
 import { RequestProps, GetProps, PostProps } from "@/constants/service/type";
-import { Session } from "next-auth";
 import getUpdatedToken from "./updateToken";
 import router from "next/router";
 
@@ -188,23 +187,23 @@ const postData = ({
     });
 };
 
-const makeHeader = (session: Session | null | undefined) => {
+const makeHeader = (session: null | undefined) => {
   const contentType = { "Content-Type": "application/json" };
   const dateNow = Date.now();
 
   if (session) {
     // 리프레시 만료
-    if (dateNow > session.jwt.refreshExpireDate!) return -1;
+    if (dateNow > 10) return -1;
     // 엑세스 만료
-    if (dateNow > session.jwt.accessExpireDate!)
+    if (dateNow > 10)
       return {
         ...contentType,
-        "Authorization-refresh": `Bearer ${session.jwt.refreshToken}`,
+        "Authorization-refresh": `Bearer`,
       };
     // 만료된 토큰 없음
     return {
       ...contentType,
-      Authorization: `Bearer ${session.jwt.accessToken}`,
+      Authorization: `Bearer`,
     };
   } else {
     return { ...contentType };

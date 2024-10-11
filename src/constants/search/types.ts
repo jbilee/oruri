@@ -36,7 +36,7 @@ export interface CurrentLocationBtnProps {
 }
 
 export interface GymListBannerProps {
-  searchWord?: string;
+  searchWord?: string | null;
   sortingType?: string;
   isSearchPage?: boolean;
 }
@@ -44,7 +44,7 @@ export interface GymListBannerProps {
 export interface LazyLoadingItemsProps {
   searchWord?: string;
   sortingType?: string;
-  isSearchPage?:boolean;
+  isSearchPage?: boolean;
 }
 
 export interface SearchBannerProps {
@@ -60,7 +60,7 @@ export interface SearchProps {
   postfixIcon?: JSX.Element; // 검색창에 표시되는 아이콘
   onSubmit?: (event: any) => any; // 엔터 클릭시 발생되는 이벤트
   useLocation?: boolean; // 현재 위치로 검색
-  searchWord?: string;
+  searchWord?: string | null;
   border?: string;
   dropDownCount?: number;
   isSearchPage?: boolean;

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { Client, type IFrame } from "@stomp/stompjs";
 import styled from "styled-components";
 import { MdOutlineClose, MdOutlineSupportAgent } from "react-icons/md";
@@ -7,12 +6,9 @@ import Socket from "./Socket";
 import { SERVER_ADDRESS, SOCKET_ADDRESS } from "@/constants/constants";
 import { COLOR } from "@/styles/global-color";
 import type { ChatModalProps, FetchedChatroom } from "@/constants/chat/types";
+import { useUser } from "@clerk/nextjs";
 
-const fetchChatroom = async (
-  gymId: string,
-  nickname: string,
-  token: string,
-): Promise<FetchedChatroom> => {
+const fetchChatroom = async (gymId: string, nickname: string, token: string): Promise<FetchedChatroom> => {
   console.log("fetching chatroom");
   try {
     const controller = new AbortController();
@@ -60,7 +56,7 @@ const createRoom = async (gymId: string, nickname: string, token: string) => {
 };
 
 const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
-  const { data: session } = useSession();
+  const { user } = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [client, setClient] = useState<null | Client>(null);
   const [roomId, setRoomId] = useState<null | string>(null);
@@ -68,17 +64,17 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
   const [isSocketError, setIsSocketError] = useState(false);
 
   useEffect(() => {
-    if (!session || client) return;
+    if (!user || client) return;
 
     const clientInstance = new Client({
       brokerURL: `${SOCKET_ADDRESS}/ws/chat`,
-      connectHeaders: { Authorization: "Bearer " + session.jwt.accessToken },
+      connectHeaders: { Authorization: "Bearer " + "session.jwt.accessToken" },
     });
 
     const enterRoom = async () => {
       let roomId;
-      const token = session.jwt.accessToken;
-      const nickname = session.user.nickname;
+      const token = "session.jwt.accessToken";
+      const nickname = user.username ?? "";
       const chatroomData = await fetchChatroom(gymId, nickname, token);
 
       if (chatroomData.exists) roomId = chatroomData.roomId;
@@ -101,7 +97,7 @@ const ChatModal = ({ gymId, gymName }: ChatModalProps) => {
       setIsSocketError(true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [user]);
 
   const toggleModal = () => setIsOpen(!isOpen);
 

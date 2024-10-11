@@ -1,5 +1,3 @@
-import type { Session } from "next-auth";
-
 // 데이터 타입 정의
 export type BaseGymData = {
   name: string;
@@ -81,7 +79,7 @@ export type UserComment = { user: string; createdAt: string; text: string };
 export interface CommentsProps {
   id: string;
   comments: UserComment[] | null;
-  session: Session | null;
+  session: null;
 }
 
 export interface CommentTextareaProps {

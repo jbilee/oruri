@@ -1,5 +1,3 @@
-import { Session } from "next-auth";
-
 const requestOptions = {
   GET: "GET",
   POST: "POST",
@@ -20,30 +18,30 @@ export type UpdateTokenInfo = {
 export interface RequestProps {
   option: Option;
   url: string;
-  session?: Session | null;
+  session?: null;
   data?: any;
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean; // response의 body 여부
-  update?: (data?: any) => Promise<Session | null>;
+  update?: (data?: any) => Promise<null>;
 }
 
 export interface GetProps {
   absoluteUrl: string;
-  session?: Session | null;
+  session?: null;
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean;
-  update?: (data?: any) => Promise<Session | null>;
+  update?: (data?: any) => Promise<null>;
 }
 
 export interface PostProps {
   option: Option;
   absoluteUrl: string;
   data: any;
-  session?: Session | null;
+  session?: null;
   onSuccess?: (data: any) => void | any;
   onError?: (error: Error) => void;
   hasBody?: boolean;
-  update?: (data?: any) => Promise<Session | null>;
+  update?: (data?: any) => Promise<null>;
 }

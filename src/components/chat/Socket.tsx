@@ -1,29 +1,19 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react";
 import styled from "styled-components";
 import { BarLoader } from "react-spinners";
 import ChatForm from "./ChatForm";
 import ChatHistory from "./ChatHistory";
 import ErrorFallback from "../common/ErrorFallback";
 import LoginPrompt from "../common/LoginPrompt";
-import {
-  type ChatHistoryProps,
-  ChatHistoryContext,
-  getFormattedChatHistory,
-} from "@/ChatHistoryContext";
+import { type ChatHistoryProps, ChatHistoryContext, getFormattedChatHistory } from "@/ChatHistoryContext";
 import { requestData } from "@/service/api";
 import { COLOR } from "@/styles/global-color";
 import type { StompSubscription, Message } from "@stomp/stompjs";
 import type { SocketProps } from "@/constants/chat/types";
+import { useUser } from "@clerk/nextjs";
 
-const Socket = ({
-  gymName,
-  client,
-  roomId,
-  isRoomFetchError,
-  isSocketError,
-}: SocketProps) => {
-  const { data: session, update } = useSession();
+const Socket = ({ gymName, client, roomId, isRoomFetchError, isSocketError }: SocketProps) => {
+  const { user } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const subscriptionRef = useRef<null | StompSubscription>(null);
   const { history, updateHistory } = useContext(ChatHistoryContext);
@@ -31,16 +21,15 @@ const Socket = ({
 
   // session값은 page visibility가 바뀔 때마다 갱신되기 때문에 사이드이펙트를 줄이기 위해 session dependency를 분리
   useEffect(() => {
-    if (!session) setIsLoading(false);
-  }, [session]);
+    if (!user) setIsLoading(false);
+  }, [user]);
 
   useEffect(() => {
-    if (!session || !client || !roomId) return;
+    if (!user || !client || !roomId) return;
 
     const onServerMessage = (response: Message) => {
       const { message, sender, createdAt } = JSON.parse(response.body);
-      const userType =
-        sender === session.user.nickname ? "customer" : "manager";
+      const userType = sender === user.username ? "customer" : "manager";
       const newMessage = { userType, message, createdAt };
       const newHistory: ChatHistoryProps = { ...currentHistory.current };
 
@@ -55,21 +44,14 @@ const Socket = ({
 
     const fetchHistory = async () => {
       console.log("fetching chat history");
-      const nickname = session.user.nickname;
+      const nickname = user.username ?? "";
       requestData({
         option: "GET",
         url: `/chat/find/message/${roomId}`,
-        session,
-        update,
         onSuccess: (data) => {
           console.log(data);
           const loadedHistory: ChatHistoryProps = {};
-          loadedHistory[roomId] = getFormattedChatHistory(
-            data,
-            nickname,
-            "manager",
-            "customer"
-          );
+          loadedHistory[roomId] = getFormattedChatHistory(data, nickname, "manager", "customer");
           updateHistory((prev) => ({ ...prev, ...loadedHistory }));
           currentHistory.current = { ...loadedHistory };
         },
@@ -79,13 +61,9 @@ const Socket = ({
       });
     };
 
-    subscriptionRef.current = client.subscribe(
-      `/queue/chat/room/${roomId}`,
-      onServerMessage
-    );
+    subscriptionRef.current = client.subscribe(`/queue/chat/room/${roomId}`, onServerMessage);
     // 이전 채팅 기록을 fetch하고 context에 저장
-    if (!currentHistory.current || !currentHistory.current[roomId])
-      fetchHistory();
+    if (!currentHistory.current || !currentHistory.current[roomId]) fetchHistory();
 
     setIsLoading(false);
     return () => subscriptionRef.current?.unsubscribe();
@@ -94,7 +72,7 @@ const Socket = ({
 
   const handleSend = (message: string) => {
     if (message === "") return false;
-    if (!session) {
+    if (!user) {
       console.log("로그인한 유저가 아님");
       return false;
     }
@@ -110,7 +88,7 @@ const Socket = ({
       destination: "/app/chat/message",
       body: JSON.stringify({
         roomId: roomId,
-        sender: session.user.nickname,
+        sender: user.username ?? "",
         message,
       }),
     });
@@ -130,16 +108,10 @@ const Socket = ({
                 연결 중...
                 <BarLoader />
               </S.Loader>
-            ) : session ? (
+            ) : user ? (
               <>
-                <ChatHistory
-                  speaker="customer"
-                  history={currentHistory.current?.[roomId ?? ""]}
-                />
-                <ChatForm
-                  placeholder="문의를 남겨주세요 :)"
-                  handleSend={handleSend}
-                />
+                <ChatHistory speaker="customer" history={currentHistory.current?.[roomId ?? ""]} />
+                <ChatForm placeholder="문의를 남겨주세요 :)" handleSend={handleSend} />
               </>
             ) : (
               <LoginPrompt />

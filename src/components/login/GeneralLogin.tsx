@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { signIn } from "next-auth/react";
 import { IoPersonOutline } from "react-icons/io5";
 import { IoLockClosedOutline } from "react-icons/io5";
 import Link from "next/link";
@@ -24,26 +23,26 @@ const GeneralLogin = () => {
 
     const result = await getLoginInfos(email, password).then((user) => {
       if (user) {
-        return signIn("credentials", {
-          email: email,
-          nickname: user.user.nickname,
-          accessToken: user.jwt.accessToken,
-          refreshToken: user.jwt.refreshToken,
-          loginType: "general",
-          redirect: true,
-          callbackUrl: callbackUrl,
-        });
+        // return signIn("credentials", {
+        //   email: email,
+        //   nickname: user.user.nickname,
+        //   accessToken: user.jwt.accessToken,
+        //   refreshToken: user.jwt.refreshToken,
+        //   loginType: "general",
+        //   redirect: true,
+        //   callbackUrl: callbackUrl,
+        // });
       } else {
         // 로그인 에러시
         setLoginMessage("아이디 혹은 비밀번호를 잘못 입력했습니다.");
       }
     });
 
-    if (result?.error) {
-      console.log("login error");
-    } else {
-      console.log("login success");
-    }
+    // if (result?.error) {
+    //   console.log("login error");
+    // } else {
+    //   console.log("login success");
+    // }
   };
 
   return (

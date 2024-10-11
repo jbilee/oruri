@@ -1,15 +1,16 @@
+"use client";
+
 import { styled } from "styled-components";
 import Image from "next/image";
 import img01 from "../../../public/thumbnail3.jpg";
 import { IoHeartOutline } from "react-icons/io5";
 import Bookmark from "./Bookmark";
 import { CardProps } from "@/constants/search/types";
-import router from "next/router";
-import { useSession } from "next-auth/react";
 import { DEVICE_SIZE } from "@/constants/styles";
+import { useRouter } from "next/navigation";
 
 const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
-  const { data: session, update } = useSession();
+  const router = useRouter();
 
   const handleCardOnClick = () => {
     router.push(`/gyms/${cardInfo.id}`);
@@ -27,17 +28,15 @@ const PreviewCard = ({ width, height, cardInfo }: CardProps) => {
               <S.Address>{cardInfo.address.roadAddress}</S.Address>
               <S.Name>{cardInfo.name}</S.Name>
             </S.NameContainer>
-            <Bookmark
+            {/* <Bookmark
               update={update}
               session={session}
               gymId={cardInfo.id.toString()}
               size="20px"
-            />
+            /> */}
           </S.MainInfoContainer>
           <S.SubInfoContainer>
-            <S.Date>
-              최근 세팅일 : {cardInfo.latestSettingDay ?? "미등록"}
-            </S.Date>
+            <S.Date>최근 세팅일 : {cardInfo.latestSettingDay ?? "미등록"}</S.Date>
             <S.LikeContainer>
               {cardInfo.likeNumber ?? 0}
               <IoHeartOutline size={20} color="#666666" />
@@ -73,8 +72,7 @@ const S = {
   }>`
     padding: 0;
     margin: 0;
-    height: ${(props) =>
-      props.height ? `${parseInt(props.height, 10) * 0.6}px` : `170px`};
+    height: ${(props) => (props.height ? `${parseInt(props.height, 10) * 0.6}px` : `170px`)};
   `,
   Image: styled(Image)`
     padding: 0;

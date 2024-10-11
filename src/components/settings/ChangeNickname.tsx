@@ -1,21 +1,16 @@
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import React from "react";
 import { requestData } from "@/service/api";
 import InputWithTitle from "@/components/common/InputWithTitle";
-import {
-  CONFIRM_MESSAGE,
-  NICKNAME_REGREX,
-  PASSWORD_REGREX,
-} from "@/constants/login/constants";
-import handleSignOut from "@/service/api/logout";
+import { CONFIRM_MESSAGE, NICKNAME_REGREX, PASSWORD_REGREX } from "@/constants/login/constants";
 import { COLOR } from "@/styles/global-color";
+import { useUser } from "@clerk/nextjs";
 
 const ChangeNickname = () => {
   // 현재 정보업데이트시 비밀번호 미사용
 
-  const { data: session, update } = useSession();
+  const { user } = useUser();
   //   const [isPasswordValid, setIsPasswordValid] = useState(false);
   // const [passwordMessage, setPasswordMessage] = useState("");
 
@@ -37,12 +32,10 @@ const ChangeNickname = () => {
     requestData({
       option: "GET",
       url: "/members/myInfo",
-      session,
       hasBody: true,
       onSuccess,
-      update,
     });
-  }, [session]);
+  }, [user]);
 
   // const handlePasswordChange = (event: {
   //   target: {
@@ -99,7 +92,7 @@ const ChangeNickname = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const onSuccess = () => {
-      handleSignOut();
+      // handleSignOut();
       // .then(() => getLoginInfos(infoFromServer.email, password))
       // .then((user) => {
       //   signIn("credentials", {
@@ -116,11 +109,9 @@ const ChangeNickname = () => {
     return requestData({
       option: "PUT",
       url: "/members/update",
-      session,
       data: { nickname: nickname },
       hasBody: false,
       onSuccess,
-      update,
     });
   };
 
