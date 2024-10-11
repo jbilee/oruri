@@ -1,11 +1,12 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import styled from "styled-components";
 import { BarLoader } from "react-spinners";
 import Comments from "@/components/gyms/Comments";
 import DynamicMap from "@/components/gyms/DynamicMap";
 import ErrorPage from "@/components/common/ErrorPage";
-import ChatModal from "@/components/chat/ChatModal";
+// import ChatModal from "@/components/chat/ChatModal";
 import ImageCarousel from "@/components/gyms/ImageCarousel";
 import MainContent from "@/components/gyms/MainContent";
 import SideContent from "@/components/gyms/SideContent";
@@ -15,22 +16,25 @@ import { IMAGE_SIZE } from "@/constants/gyms/constants";
 import { NAVERMAP_API } from "@/constants/constants";
 import { DEVICE_SIZE } from "@/constants/styles";
 import type { GymData } from "@/constants/gyms/types";
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useAuth, useUser } from "@clerk/nextjs";
 
-const GymInfo = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
-  // const { data: session } = useSession();
+const GymInfo = ({ params }: { params: { id: string } }) => {
   const [gymData, setGymData] = useState<null | GymData>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const { isLoading: isLoadingMap } = useApi(NAVERMAP_API);
+  const user = useAuth()
+  const user2 = useUser()
+  console.log(user)
+  console.log(user2)
 
   useEffect(() => {
     if (!isLoading) return;
     requestData({
       option: "GET",
-      url: `/gyms/${id}`,
+      url: `/gyms/${params.id}`,
       onSuccess: (data) => {
-        const gymData = { ...data, id };
+        const gymData = { ...data, id: params.id };
         setGymData(gymData);
       },
       onError: (e) => {
@@ -39,7 +43,7 @@ const GymInfo = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
       },
     });
     setIsLoading(false);
-  }, [isLoading, id]);
+  }, [isLoading, params.id]);
 
   return (
     <S.Page>
@@ -54,29 +58,17 @@ const GymInfo = ({ id }: InferGetServerSidePropsType<GetServerSideProps>) => {
             <S.InfoContainer>
               <S.Main>
                 <MainContent gymData={gymData} />
-                {!isLoadingMap && (
-                  <DynamicMap name={gymData.name} coordinates={gymData.coordinates} />
-                )}
+                {!isLoadingMap && <DynamicMap name={gymData.name} coordinates={gymData.coordinates} />}
               </S.Main>
               <SideContent gymData={gymData} />
             </S.InfoContainer>
-            <Comments
-              key={gymData.id}
-              id={gymData.id}
-              comments={gymData.comments}
-              session={null}
-            />
+            <Comments key={gymData.id} id={gymData.id} comments={gymData.comments} session={null} />
           </S.Wrapper>
-          <ChatModal key={gymData.id} gymId={gymData.id} gymName={gymData.name} />
+          {/* <ChatModal key={gymData.id} gymId={gymData.id} gymName={gymData.name} /> */}
         </>
       )}
     </S.Page>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context.query.id;
-  return { props: { id } };
 };
 
 const S = {

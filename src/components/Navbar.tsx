@@ -1,3 +1,5 @@
+"use client";
+
 import { styled } from "styled-components";
 import { useEffect, useState } from "react";
 import AuthBar from "./auth/AuthBar";
@@ -78,10 +80,8 @@ const S = {
     right: 0;
     z-index: 200;
 
-    padding-left: ${({ $needMargin }) =>
-      $needMargin === true ? "10%" : "30px"};
-    padding-right: ${({ $needMargin }) =>
-      $needMargin === true ? "10%" : "30px"};
+    padding-left: ${({ $needMargin }) => ($needMargin === true ? "10%" : "30px")};
+    padding-right: ${({ $needMargin }) => ($needMargin === true ? "10%" : "30px")};
   `,
   BarContainer: styled.div`
     display: flex;

@@ -2,7 +2,6 @@ import GlobalStyle from "@/styles/global-styles";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 import type { Metadata } from "next";
-import Test from "./Test";
 
 export const metadata: Metadata = {
   title: "오르리",
@@ -12,8 +11,6 @@ export const metadata: Metadata = {
 const Layout = ({ children }: React.PropsWithChildren<{}>) => {
   return (
     <>
-      <Test />
-      <GlobalStyle />
       <Navbar />
       <main>{children}</main>
       <Footer />
